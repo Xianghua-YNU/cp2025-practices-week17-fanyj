@@ -34,15 +34,21 @@ def solve_ode(h, g, max_iter=10000, tol=1e-6):
     # 初始化解数组，边界条件已满足：x[0] = x[-1] = 0
     x = np.zeros(t.size)
     
-    # TODO: 实现松弛迭代算法
-    # 提示：
-    # 1. 设置初始变化量 delta = 1.0
-    # 2. 当 delta > tol 时继续迭代
-    # 3. 对内部点应用公式：x_new[1:-1] = 0.5 * (h*h*g + x[2:] + x[:-2])
-    # 4. 计算最大变化量：delta = np.max(np.abs(x_new - x))
-    # 5. 更新解：x = x_new
+    # 实现松弛迭代算法
+    delta = 1.0
+    iter_count = 0
     
-    raise NotImplementedError(f"请在 {__file__} 中实现此函数")
+    while delta > tol and iter_count < max_iter:
+        x_new = np.copy(x)
+        x_new[1:-1] = 0.5 * (h * h * g + x[2:] + x[:-2])
+        delta = np.max(np.abs(x_new - x))
+        x = x_new
+        iter_count += 1
+    
+    if iter_count >= max_iter:
+        print(f"警告：达到最大迭代次数 {max_iter}，可能未收敛。")
+    
+    return t, x
 
 if __name__ == "__main__":
     # 测试参数
